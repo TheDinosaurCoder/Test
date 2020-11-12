@@ -297,6 +297,7 @@ blockCollided = True
 dieCheck = False
 if len(blocksCreated) > 1:
     initialLowHeight = blocksCreated[-1].y
+    
 while event and not dieCheck:
     event = events() #Checks events from the player.
     background.displayImage()
