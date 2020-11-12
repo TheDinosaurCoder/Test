@@ -310,6 +310,3 @@ while event and not dieCheck:
     pygame.display.update() #Updates the Screen.
 pygame.quit()
 quit()
-
-#Prints hello world to the console!
-print("Hello,World!")
