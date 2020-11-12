@@ -297,7 +297,7 @@ blockCollided = True
 dieCheck = False
 if len(blocksCreated) > 1:
     initialLowHeight = blocksCreated[-1].y
-    
+
 while event and not dieCheck:
     event = events() #Checks events from the player.
     background.displayImage()
@@ -310,3 +310,6 @@ while event and not dieCheck:
     pygame.display.update() #Updates the Screen.
 pygame.quit()
 quit()
+
+#Prints hello world to the console!
+print("Hello,World!")
