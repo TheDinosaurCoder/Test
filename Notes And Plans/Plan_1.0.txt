@@ -1,0 +1,25 @@
+-Game has a player on a world that allows them to explore and to build what they want.
+-They start on a world like a planet.
+-Player has inventory, health, etc..
+-player has a health and hunger.
+-World is 2D with terrian that generates randomly.
+-The World is saved to a json file, holding the name of the block, the position in the world: x and y. 
+  --> The camera and player positions is saved as well.
+-The player moves with the camera at a a speed, this speed can change depending on the players state.
+-The player spawns on top of the block, and the sky moves with the player
+
+World Display:
+    -The game only generates the sprites if the player is with in the radius of those blocks.
+      --> Need a list with all the position of the blocks, this will be saved.
+      --> Need a list with all the sprites for the blocks, this will be saved.
+    - To find the radius use the pythgrome thernem. r = /``(playerx - blockx)^2 + (playery - blocky)^2
+    - This will give the radius, if it is with in the radius than render block.
+    -The world is rendered like teraria.
+
+Code Notes:
+
+- Make a varable for each block, get the varable to be attact to the class, append the varables to a list containg the blocks.
+- Generate the blocks using the varables based on random positons and block.
+- Let the player delete the blocks if they click it, remove from the list. 
+- And place in the players inventory.
+- Check is the mouse is between the block. Use name to index the block in inventory.
