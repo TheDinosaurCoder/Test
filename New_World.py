@@ -6,12 +6,12 @@
 
 import pygame
 import random #import necessary librarys for the program.
-import math 
+import math
 import time
 
 #Classes:d
 
-class SpriteManager():    
+class SpriteManager():
     def __init__(self, tag, image, x, y):
         self.tag = tag
         self.x = x
@@ -31,16 +31,16 @@ class SpriteManager():
         self.rect = self.image.get_rect(topleft=(self.x, self.y)) #sets the rect of the player with x,y,w,h
 
     def displayImage(self): #Displays the image at the positons provided.
-        self.rect = self.image.get_rect(topleft = (self.x, self.y)) #gest tge 
+        self.rect = self.image.get_rect(topleft = (self.x, self.y)) #gest tge
         ds.blit(self.image, (self.x, self.y))
-    
+
     def pixelColldier(self, sprite1, sprite2):
         if pygame.sprite.collide_mask(sprite1, sprite2): #Perfect Collidier on pixel level
             return True
         else:
             return False
 
-    def collidercheck(self, sprite_1, sprite_2):#checks to see if the two sprites collider with each other 
+    def collidercheck(self, sprite_1, sprite_2):#checks to see if the two sprites collider with each other
 
         # Uses the rectangle around the sprite to determine if they collide.
         if pygame.Rect.colliderect(sprite_1.rect, sprite_2.rect):#if the sprites collide it will return true or return false if no collion.
@@ -68,7 +68,7 @@ class Player(SpriteManager): #enhartes from the spritemanger
 
     def jumpAndGravity(self, isCollidingWithGround, jumpLimit, initialLowHeight): #Need timer for when this instance goes....
         if self.isJumping:
-            if initialLowHeight > blocksCreated[-1].y:
+            if initialLowHeight > chunkWorld[whichChunkRender][0][-1].y:
                 if yJumpCheck(image):
                     blockMover(False,False, True, False)
                     self.y -= 2
@@ -79,7 +79,7 @@ class Player(SpriteManager): #enhartes from the spritemanger
                 else:
                     self.isJumping = False
                     self.falling = True #makes the player jump. by looking at loops and stuff.
-            elif initialLowHeight == blocksCreated[-1].y:
+            elif initialLowHeight == chunkWorld[whichChunkRender][0][-1].y:
                 self.y -= 2
                 if self.y <= self.maxHeightForJump or self.y >= 700 or not yJumpCheck(image):
                     self.isJumping = False
@@ -89,9 +89,9 @@ class Player(SpriteManager): #enhartes from the spritemanger
             if isCollidingWithGround and yJumpCheck(image):
                 self.falling = False
             else:#this is the problem
-                if self.y <= 625 or blocksCreated[-1].y >= 688 and self.y <= 625 and isCollidingWithGround == False:
+                if self.y <= 625 or chunkWorld[whichChunkRender][0][-1].y >= 688 and self.y <= 625 and isCollidingWithGround == False:
                     self.y += 2
-                if self.y >= 625 and blocksCreated[-1].y >= 689 and isCollidingWithGround == False: 
+                if self.y >= 625 and chunkWorld[whichChunkRender][0][-1].y >= 689 and isCollidingWithGround == False:
                     blockMover(False,False, False, True)
                 elif self.y >= 625 and isCollidingWithGround == False:
                     print('YOU DIED!')
@@ -102,15 +102,15 @@ class Player(SpriteManager): #enhartes from the spritemanger
     def controlPlayer(self): #Player Controls
         keys = pygame.key.get_pressed() #gets all keys pressed.
         if keys[pygame.K_d] and not blockAndPlayerColliderCheck(image) and foreheadCheck(image, True):
-            if self.x <= 1000 or blocksCreated[-1].x <= 1250 and self.x <= 1220:
+            if self.x < 1000 or chunkWorld[-1][1] + chunkWorld[-1][2] <= 1250 and self.x <= 1218:
                 self.x += 1
-            if self.x >= 1000 and blocksCreated[-1].x >= 1250:
+            if self.x == 1000 and chunkWorld[-1][1] + chunkWorld[-1][2] >= 1250:
                 blockMover(True)
         if keys[pygame.K_a] and not blockAndPlayerColliderCheck(image) and foreheadCheck(image, False, True):
-            if self.x >= 280 or blocksCreated[0].x >= -10 and self.x >= 0:
-                self.x -= 1 
-            if self.x <= 280 and blocksCreated[0].x <= -10: #moves the player in a ddddddset x and y, camera follows.
-                blockMover(False,True)      
+            if self.x > 280 or chunkWorld[0][1] <= 0 and self.x > 0:
+                self.x -= 1
+            if self.x == 280 and chunkWorld[0][1] < 0: #moves the player in a ddddddset x and y, camera follows.
+                blockMover(False,True)
         if keys[pygame.K_SPACE] and blockCollided: #and not self.falling:
             self.isJumping = True
             self.howManyUp = 0
@@ -133,7 +133,7 @@ def events():
             if event.key == pygame.K_q:
                 return False
     return True
-    
+
 def generateBlocks():
     currentx = -150
     currenty = 564
@@ -166,43 +166,31 @@ def checkRadius(image, block): #change this to the chunk method.
 
 def blockMover(right = False, left = False, up = False, down = False):
     if right:
-        for block in blocksCreated:         
-            block.x -= 1
+        #for block in blocksCreated:
+        #    block.x -= 1
+        moveChunks(right)
     if left:
-        for block in blocksCreated: #moves all the blocks in the list to a new x or y.
-            block.x += 1
+        #for block in blocksCreated: #moves all the blocks in the list to a new x or y.
+        #    block.x += 1
+        moveChunks(right, left)
     if up:
-        for block in blocksCreated:
-            block.y += 1
+        #for block in blocksCreated:
+        #    block.y += 1
+        changeInxy[1] += 1
+        #moveChunks()
         image.maxHeightForJump += 1
     if down:
-        for block in blocksCreated:
-            block.y -= 1
+        #for block in blocksCreated:
+        #aaa    block.y -= 1
+        changeInxy[1] -= 1
+        #moveChunks()
         image.maxHeightForJump -= 1
-
-def blockManager(blockCollided, image):
-    blockPos = 0
-    last = 0
-    check = False
-    change = False
-    blockLength = len(blocksCreated) #goes through all the blocks in the list and checks uf they can be blit to the screen.
-    for block in blocksCreated:
-        if block.collidercheck(block, image):
-            blockCollided = True
-            change = True
-        if not change:
-            blockCollided = False
-        checkRadius(image, block)
-        check = mouseCheck(block)
-        if check:
-            del blocksCreated[blockPos]
-        blockPos += 1
-    return blockCollided
 
 def blockAndPlayerColliderCheck(image):
     horizontalCheck = False
     change = False
-    for block in blocksCreated:
+    #print(blocksCreated[0])
+    for block in chunkWorld[whichChunkRender][0]:
         if block.collidercheck(block, image) and block.y == image.y - 64: #for under the player check
             horizontalCheck = True
             change = False
@@ -214,7 +202,8 @@ def foreheadCheck(image, right = False, left = False):
     if right:
         canMove = True
         change = False
-        for block in blocksCreated:
+        for block in chunkWorld[whichChunkRender][0]:
+            #print(whichChunkRender)
             if block.y + 2 >= image.y and block.y <= image.y + 60 and block.x == image.x + 64: #for under the player check
                 canMove = False
                 change = True
@@ -224,7 +213,7 @@ def foreheadCheck(image, right = False, left = False):
     if left:
         canMove = True
         change = False# for jumping under blocks if image.y == block.y + 32: self.isjumping  = False
-        for block in blocksCreated:
+        for block in chunkWorld[whichChunkRender][0]:
             if block.y + 2 >= image.y and block.y <= image.y + 60 and block.x + 32 == image.x: #for under the player check
                 canMove = False
                 change = True
@@ -235,7 +224,7 @@ def foreheadCheck(image, right = False, left = False):
 def yJumpCheck(image):
     canMove = True
     change = False
-    for block in blocksCreated: #or block.x >= image.x and block.x <= image.x + 64
+    for block in chunkWorld[whichChunkRender][0]: #or block.x >= image.x and block.x <= image.x + 64
         if image.y >= block.y and image.y <= block.y + 32 and block.x >= image.x and block.x + 32 <= image.x + 64:# or image.y >= block.y and image.y <= block.y + 32 and image.x >= block.x and image.x <= block.x + 32: #for under the player check
             canMove = False
             change = True
@@ -275,35 +264,181 @@ def feetCheck(blocks, player):
             if block.x >= player.x and player.x <= block.x + 32:
                 return True
     return False
+
+def createChunkWorld(lengthoFWorld):
+    #Varables that hold the length of each segment of the world.
+    horizontalLength = lengthoFWorld[0]
+    verticalLength = lengthoFWorld[1]
+    numberOfBlocksPerChunk = 25
+    numberChunks = int(horizontalLength / numberOfBlocksPerChunk) #-number of blocks per chunk, try 50 next.
+    #number of blocks times the size in pixels.
+    lengthofChunk = (numberOfBlocksPerChunk - 1) * 32 #So number of blocks - 1 since it starts at pos 0, muply by 32 the pixel size
+    xDistance = 32 #sets the conditons
+    yDistance = 32
+    for chunk in range(numberChunks): #-The chunk index.
+
+        chunkWorld.append([]) #Adds a list.
+        chunkWorld[chunk].append([]) #at zero is a list of the blocks.
+        #gets the current chunk pos by * currentChuck by lengthOfChunk
+        currentChunkXPos = (chunk * lengthofChunk) #- (horizontalLength / 2)
+
+        #other:
+        currentx = currentChunkXPos
+        currenty = 564
+        #adds the properties:
+
+        chunkWorld[chunk].append(currentChunkXPos)#1 index
+        chunkWorld[chunk].append(lengthofChunk)#2 index
+        #Change in x and y is the 3 index:
+        chunkWorld[chunk].append((0, 0))
+
+        #Runs a loop through the vertical length of the world:
+        for v in range(verticalLength):
+            currentx = currentChunkXPos
+            #Runs a loop through the horizontal length of the chunk 25 blocks.
+            for h in range(25):
+                #adds a block to the block list in the chunk list.
+                chunkWorld[chunk][0].append(Blocks('Grass', 'Sprites/Grass.png',currentx, currenty))
+                #if currentChunkXPos == -250 and currenty == 564:
+                    #print(currentx)
+                currentx += xDistance
+            currenty += yDistance
+
+def manageChunkWorld():
+    #Check where is player:
+
+    for i in range(len(chunkWorld) - 1, - 1, -1): #Runs through the length of the chunk world list.
+        #Check if player is in a chunk:
+        if image.x >= chunkWorld[i][1] and image.x <= chunkWorld[i][1] + chunkWorld[i][2]:
+            return i
+    
+
+def moveChunks(right = False, left = False):
+
+    #Sets the values based on the right or left:
+    if right:
+        movementDirection = -1
+    elif left:
+        movementDirection = 1
+    else:
+        return 0 
+    if right or left:
+        #loops through the chunks to apply the movement:
+        for i in range(len(chunkWorld)):
+            chunkWorld[i][1] += movementDirection 
+            chunkWorld[i][3] = (chunkWorld[i][3][0] + movementDirection, 0)
+
+        if whichChunkRender != len(chunkWorld):
+            if whichChunkRender > 0 and whichChunkRender != len(chunkWorld) - 1: #checks if the chunk is greater than zero and not the last chunk
+                #Then change the x values:
+                for i in range(len(chunkWorld[whichChunkRender][0])):
+                    chunkWorld[whichChunkRender][0][i].x += chunkWorld[whichChunkRender][3][0]
+
+                for i in range(len(chunkWorld[whichChunkRender - 1][0])):
+                    chunkWorld[whichChunkRender - 1][0][i].x += chunkWorld[whichChunkRender - 1][3][0]
+
+                for i in range(len(chunkWorld[whichChunkRender + 1][0])):
+                    chunkWorld[whichChunkRender + 1][0][i].x += chunkWorld[whichChunkRender + 1][3][0]
+
+            elif whichChunkRender == 0 and len(chunkWorld) > 1:
+                #Then change the x values:
+                for i in range(len(chunkWorld[whichChunkRender][0])):
+                    chunkWorld[whichChunkRender][0][i].x += chunkWorld[whichChunkRender][3][0]
+
+                for i in range(len(chunkWorld[whichChunkRender + 1][0])):
+                    chunkWorld[whichChunkRender + 1][0][i].x += chunkWorld[whichChunkRender + 1][3][0]
+
+            elif whichChunkRender == len(chunkWorld) - 1:
+                #Then change the x values:
+                for i in range(len(chunkWorld[whichChunkRender][0])):
+                    chunkWorld[whichChunkRender][0][i].x += chunkWorld[whichChunkRender][3][0]
+
+                for i in range(len(chunkWorld[whichChunkRender - 1][0])):
+                    chunkWorld[whichChunkRender - 1][0][i].x += chunkWorld[whichChunkRender - 1][3][0]
+
+
+
+def renderChunks(blockCollided):
+    blockPos = 0
+    theChunk = whichChunkRender
+    totalBlocks = []
+    an2 = True
+
+    if whichChunkRender != 0 and whichChunkRender != len(chunkWorld) - 1:
+        totalBlocks = chunkWorld[whichChunkRender - 1][0] + chunkWorld[whichChunkRender][0] + chunkWorld[whichChunkRender + 1][0]
+        an2 = True
+    elif whichChunkRender == 0 and len(chunkWorld) > 1:
+        totalBlocks = chunkWorld[whichChunkRender][0] + chunkWorld[whichChunkRender + 1][0]
+        an2 = False
+    elif whichChunkRender == len(chunkWorld) - 1:
+        totalBlocks = chunkWorld[whichChunkRender - 1][0] + chunkWorld[whichChunkRender][0]
+        an2 = True
+
+    blockPos = 0
+    pos = 0
+    check = False
+    change = False
+    for block in totalBlocks:
+        if blockPos == 500 and an2:
+            print("500!")
+            if block.collidercheck(block, image):
+                blockCollided = True
+                change = True
+                print(blockCollided)
+            if change == False:
+                blockCollided = False
+            #checkRadius(image, block)
+            check = mouseCheck(block)
+            if check:
+                del chunkWorld[whichChunkRender][0][blockPos]
+            pos += 1
+        elif blockPos == 0 and not an2:
+            print('0')
+            if block.collidercheck(block, image):
+                blockCollided = True
+                change = True
+                print(blockCollided)
+            if change == False:
+                blockCollided = False
+            #checkRadius(image, block)
+            check = mouseCheck(block)
+            if check and theChunk == whichChunkRender:
+                del chunkWorld[whichChunkRender][0][blockPos]
+            pos += 1
+        block.displayImage()
+        blockPos += 1
+    return blockCollided
+
+
 #Game:
 #--> Window:
 screenW = 1280
 screenH = 720
-fps = 144
+fps = 60
 clock = pygame.time.Clock()
 ds = pygame.display.set_mode((screenW, screenH))
 pygame.display.set_caption("New Worlds")
 #--> Other:
 event = True
-
-
-blocksCreated = []
+changeInxy = [0, 0]
+chunkWorld = []
 image = Player('Sprite', 'Sprites/test.png', 610, 501)
 background = SpriteManager('Background', 'Sprites/Background.png', 0, 0)
 blocksAvailable = [pygame.image.load('Sprites/Grass.png'), pygame.image.load('Sprites/Dirt.png')] #Contains all block names...
 renderDistance = 1300
-generateBlocks()
+whichChunkRender = 0
+createChunkWorld((1000,20))
 blockCollided = True
 dieCheck = False
-if len(blocksCreated) > 1:
-    initialLowHeight = blocksCreated[-1].y
+initialLowHeight = 1172
 
 while event and not dieCheck:
     event = events() #Checks events from the player.
     background.displayImage()
-    image.controlPlayer()
-    blockCollided = blockManager(blockCollided, image)#Checks the blocks.
+    whichChunkRender = manageChunkWorld()
     dieCheck = image.jumpAndGravity(blockCollided, 350, initialLowHeight)  #Checks the player in the gravity area.
+    blockCollided = renderChunks(blockCollided)#Checks the blocks.
+    image.controlPlayer()
     image.displayImage() #Draws image.
     mouseCheck(image) #Mouse Check.
     clock.tick(fps) #The rate at which the screen refreshes.
