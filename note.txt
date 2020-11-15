@@ -1,0 +1,4 @@
+Check if the player is at the original height of 501
+if it is then move the blocks until it reaches 564.
+
+if chunky / 2 < 564 than just do a loop to chunky/2
