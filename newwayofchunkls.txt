@@ -1,0 +1,15 @@
+maybe instead of moving the chucks 
+
+just mark all of them from 0 to 25*32 pos for each chunks.
+
+Then just have a location x that tracks how much the "playerpos" moves. 
+
+#But have it only update when the player is at the coners of the screen.
+
+locationx = 0
+locationx += 1
+locationx -= 1
+
+#tell the draw function to draw the chunks in the locationx.
+
+Have the chunkpos be the incation on what chunks or chunk to load.
